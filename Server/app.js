@@ -3,8 +3,9 @@ const app = express();
 const Routes = require("./Routes/Route");
 require("dotenv").config();
 const mongoose = require("mongoose");
-
+const cors = require("cors");
 //middleware
+app.use(cors());
 app.use(express.json());
 
 //Routes
