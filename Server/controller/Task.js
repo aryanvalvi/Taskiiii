@@ -24,12 +24,12 @@ const CreateTask = async (req, res) => {
 const GetTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const ThatOne = await Task.findOne({ _id: id });
+    const data = await Task.findOne({ _id: id });
     // res.json(req.params);
-    if (!ThatOne) {
+    if (!data) {
       return res.status(404).json("thik se id dal lund ke bal");
     }
-    res.status(200).json({ ThatOne });
+    res.status(200).json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json("fuck");

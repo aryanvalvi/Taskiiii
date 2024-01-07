@@ -5,7 +5,9 @@ import { Link } from "react-router-dom";
 const App = () => {
   const [getAll, setGetAll] = useState([]);
   const [pushTask, SetPushTask] = useState("");
-  const [isVisible, setIsvisible] = useState(false);
+  const [workdone, SetWorkdon] = useState(false);
+  const [rerender, SetRerender] = useState(false);
+  console.log(workdone);
   const GetAll = () => {
     axios
       .get("http://localhost:5000/api/todo/")
@@ -19,15 +21,19 @@ const App = () => {
 
   useEffect(() => {
     GetAll();
-  }, [getAll]);
+  }, [rerender]);
 
   const AddTask = (edata) => {
     const ronaldo = {
       message: edata,
+      completed: workdone,
     };
     axios
       .post("http://localhost:5000/api/todo/Create/", ronaldo)
-      .then((res) => console.log("data bhej diya", res))
+      .then((res) => {
+        console.log("data bhej diya", res);
+        SetRerender(!rerender);
+      })
       .catch((err) => console.log(err));
   };
 
@@ -35,24 +41,30 @@ const App = () => {
     const Id = {};
     axios
       .delete(`http://localhost:5000/api/todo/delete/${e}`)
-      .then((res) => console.log("Deleted"))
-      .catch((err) => console.log(err));
-  };
-  const TaskUpdate = (e) => {
-    axios
-      .patch(`http://localhost:5000/api/todo/delete/${e}`)
-      .then((res) => console.log("Deleted"))
+      .then((res) => {
+        console.log("Deleted");
+        SetRerender(!rerender);
+      })
       .catch((err) => console.log(err));
   };
 
-  const ButtonClick = () => {
-    // setIsvisible(!isVisible);
+  const ChnageButtonvalue = () => {
+    SetWorkdon(!workdone);
   };
+
   return (
     <div className="Container">
       <h1>TASKIII</h1>
       <input type="text" onChange={(e) => SetPushTask(e.target.value)} />
-      <input type="radio" />
+      <p>
+        Completed
+        <input
+          // value={workdone}
+          checked={workdone}
+          onChange={ChnageButtonvalue}
+          type="checkbox"
+        />
+      </p>
       <button onClick={() => AddTask(pushTask)}>Add Task</button>
 
       {/* <button onClick={GetAll}>GetAll</button> */}
@@ -63,10 +75,11 @@ const App = () => {
             <div key={e._id}>
               <h1>
                 {e.message}
+                <input type="checkbox" checked={e.completed} />
 
                 <button onClick={() => TaskDelete(e._id)}>Delete</button>
                 <Link to={`/Update/${e._id}`}>
-                  <button onClick={ButtonClick}> Update</button>
+                  <button> Update</button>
                 </Link>
 
                 {/* {isVisible && <Update value={e._id}></Update>} */}
